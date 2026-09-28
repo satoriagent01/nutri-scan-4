@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriScan - Rastreador Nutricional</title>
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">🥗 NutriScan</div>
+    <div class="nav-links">
+      <button class="nav-btn active" data-view="home">Inicio</button>
+      <button class="nav-btn" data-view="scan">Escanear</button>
+      <button class="nav-btn" data-view="products">Productos</button>
+      <button class="nav-btn" data-view="meals">Comidas</button>
+      <button class="nav-btn" data-view="tracking">Seguimiento</button>
+    </div>
+  </nav>
+
+  <main id="app">
+    <!-- Home View -->
+    <section id="home-view" class="view active">
+      <div class="hero">
+        <h1>Escanea. Rastrea. Controla.</h1>
+        <p>Toma una foto a la información nutricional de cualquier producto y rastrea tus calorías, sodio, grasas y más.</p>
+        <button class="btn-primary" data-view="scan">📸 Escanear Producto</button>
+      </div>
+      <div class="quick-stats">
+        <div class="stat-card">
+          <h3>Productos</h3>
+          <p id="total-products">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Comidas Hoy</h3>
+          <p id="today-meals">0</p>
+        </div>
+        <div class="stat-card">
+          <h3>Calorías Hoy</h3>
+          <p id="today-calories">0</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scan View -->
+    <section id="scan-view" class="view">
+      <h2>📸 Escanear Producto</h2>
+      <div class="scan-area">
+        <div class="upload-zone" id="upload-zone">
+          <p>Arrastra una foto aquí o haz clic para seleccionar</p>
+          <input type="file" id="file-input" accept="image/*" hidden>
+        </div>
+        <div id="scan-preview" class="scan-preview hidden">
+          <img id="preview-img" src="" alt="Preview">
+          <button class="btn-secondary" id="btn-cancel-scan">Cancelar</button>
+        </div>
+        <div id="scan-loading" class="scan-loading hidden">
+          <div class="spinner"></div>
+          <p>Procesando imagen con OCR...</p>
+        </div>
+        <div id="scan-result" class="scan-result hidden">
+          <h3>Información detectada:</h3>
+          <div id="nutrition-table"></div>
+          <button class="btn-primary" id="btn-save-product">Guardar Producto</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products View -->
+    <section id="products-view" class="view">
+      <h2>📦 Mis Productos</h2>
+      <div class="search-bar">
+        <input type="text" id="search-products" placeholder="Buscar producto...">
+      </div>
+      <div id="products-list" class="products-list"></div>
+    </section>
+
+    <!-- Meals View -->
+    <section id="meals-view" class="view">
+      <h2>🍽️ Crear Comida</h2>
+      <div class="meal-builder">
+        <div class="product-selector">
+          <select id="meal-product-select">
+            <option value="">Seleccionar producto...</option>
+          </select>
+        </div>
+        <div class="serving-input">
+          <label for="serving-grams">Porción (gramos):</label>
+          <input type="number" id="serving-grams" value="100" min="1">
+        </div>
+        <button class="btn-primary" id="btn-add-to-meal">Agregar a la comida</button>
+        <div id="meal-items" class="meal-items"></div>
+        <div class="meal-summary">
+          <h3>Total de la comida:</h3>
+          <div id="meal-total" class="meal-total"></div>
+        </div>
+        <button class="btn-primary" id="btn-save-meal">Guardar Comida</button>
+      </div>
+    </section>
+
+    <!-- Tracking View -->
+    <section id="tracking-view" class="view">
+      <h2>📊 Seguimiento Diario</h2>
+      <div class="date-picker">
+        <input type="date" id="tracking-date">
+      </div>
+      <div class="nutrition-bars">
+        <div class="nutrition-bar">
+          <div class="bar-label">Calorías</div>
+          <div class="bar-container">
+            <div class="bar-fill" id="bar-calories" style="width: 0%"></div>
+          </div>
+          <span class="bar-value" id="value-calories">0 / 2000 kcal</span>
+        </div>
+        <div class="nutrition-bar">
+          <div class="bar-label">Proteínas</div>
+          <div class="bar-container">
+            <div class="bar-fill" id="bar-protein" style="width: 0%"></div>
+          </div>
+          <span class="bar-value" id="value-protein">0 / 50g</span>
+        </div>
+        <div class="nutrition-bar">
+          <div class="bar-label">Grasas</div>
+          <div class="bar-container">
+            <div class="bar-fill" id="bar-fat" style="width: 0%"></div>
+          </div>
+          <span class="bar-value" id="value-fat">0 / 65g</span>
+        </div>
+        <div class="nutrition-bar">
+          <div class="bar-label">Carbohidratos</div>
+          <div class="bar-container">
+            <div class="bar-fill" id="bar-carbs" style="width: 0%"></div>
+          </div>
+          <span class="bar-value" id="value-carbs">0 / 275g</span>
+        </div>
+        <div class="nutrition-bar">
+          <div class="bar-label">Azúcar</div>
+          <div class="bar-container">
+            <div class="bar-fill" id="bar-sugar" style="width: 0%"></div>
+          </div>
+          <span class="bar-value" id="value-sugar">0 / 50g</span>
+        </div>
+        <div class="nutrition-bar">
+          <div class="bar-label">Sodio</div>
+          <div class="bar-container">
+            <div class="bar-fill" id="bar-sodium" style="width: 0%"></div>
+          </div>
+          <span class="bar-value" id="value-sodium">0 / 2300mg</span>
+        </div>
+      </div>
+      <div class="daily-meals">
+        <h3>Comidas del día</h3>
+        <div id="daily-meals-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="src/data.js"></script>
+  <script src="src/api.js"></script>
+  <script src="src/nutrition.js"></script>
+  <script src="src/ui.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
